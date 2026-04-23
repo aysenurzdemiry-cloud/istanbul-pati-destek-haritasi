@@ -58,16 +58,26 @@ function MapController({ loading }: { loading: boolean }) {
   return null;
 }
 
-// Custom Marker for points
-const SupportIcon = L.divIcon({
-  className: 'custom-div-icon',
-  html: `<div style="background-color: #FF6B35; width: 32px; height: 32px; border-radius: 50%; border: 3px solid white; box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.3); display: flex; align-items: center; justify-content: center; color: white;">
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5c.67 0 1.35.09 2 .26 1.54.4 3 1.5 3 3.24 0 1.76-1.28 3.58-3.07 5.41a3 3 0 0 1-4.86 0C7.28 11.84 6 10.02 6 8.26c0-1.74 1.46-2.84 3-3.24.65-.17 1.33-.26 2-.26Z"/><circle cx="12" cy="8" r="2"/></svg>
-  </div>`,
-  iconSize: [32, 32],
-  iconAnchor: [16, 32],
-  popupAnchor: [0, -32]
-});
+// Dynamic icon generator based on type
+const getMarkerIcon = (type: string) => {
+  const colors: { [key: string]: string } = {
+    'Barınak': '#2563eb', // blue-600
+    'Veteriner': '#dc2626', // red-600
+    'Mama Noktası': '#10b981', // emerald-600
+  };
+  
+  const color = colors[type] || '#FF6B35';
+  
+  return L.divIcon({
+    className: 'custom-div-icon',
+    html: `<div style="background-color: ${color}; width: 32px; height: 32px; border-radius: 50%; border: 3px solid white; box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.3); display: flex; align-items: center; justify-content: center; color: white;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5c.67 0 1.35.09 2 .26 1.54.4 3 1.5 3 3.24 0 1.76-1.28 3.58-3.07 5.41a3 3 0 0 1-4.86 0C7.28 11.84 6 10.02 6 8.26c0-1.74 1.46-2.84 3-3.24.65-.17 1.33-.26 2-.26Z"/><circle cx="12" cy="8" r="2"/></svg>
+    </div>`,
+    iconSize: [32, 32],
+    iconAnchor: [16, 32],
+    popupAnchor: [0, -32]
+  });
+};
 
 export default function MapPage() {
   const [points, setPoints] = useState<SupportPoint[]>([]);
@@ -254,7 +264,7 @@ export default function MapPage() {
               <Marker 
                 key={point.id} 
                 position={[point.lat!, point.lng!]}
-                icon={SupportIcon}
+                icon={getMarkerIcon(point.type)}
               >
                 <Tooltip className="custom-tooltip" direction="top" offset={[0, -32]}>
                    {point.name} • {point.district}

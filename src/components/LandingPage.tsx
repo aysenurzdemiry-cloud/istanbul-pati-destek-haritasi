@@ -88,16 +88,82 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-20 bg-paper">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8 border-t border-line pt-12">
-          <div className="flex items-center gap-3">
-             <div className="w-8 h-8 bg-brand rounded-full flex items-center justify-center text-white">
-                <PawPrint size={18} strokeWidth={3} />
-              </div>
-              <span className="font-display font-black text-lg tracking-tighter uppercase">Pati Haritası</span>
+      {/* Data Sources Section */}
+      <section id="data-sources" className="py-32 bg-white border-b border-line">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20">
+            <div>
+              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-brand mb-6 block">KAYNAKLAR</span>
+              <h2 className="text-5xl md:text-7xl font-black text-ink uppercase tracking-tighter leading-[0.85] mb-10">
+                ŞEFFAFLIK VE <br />DOĞRULANMIŞ VERİ
+              </h2>
+              <p className="text-zinc-500 font-medium text-lg leading-relaxed max-w-md">
+                Haritamızdaki bilgiler farklı kurumsal ve toplumsal ağlardan gelen verilerin birleşimiyle oluşturulmaktadır. 
+                Her bir kayıt, güncellik ve doğruluk açısından periyodik olarak kontrol edilir.
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {[
+                { title: 'GOOGLE SHEETS DB', desc: 'Bu proje için oluşturulan özelleştirilmiş dinamik veri tabanı.', link: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTZL8b6AvN7_FVnwRIZc9bqRRjx0D5fBxSj9M2Z517Zg5Dgc96ku831jF6daDCIABQSeYa9YhjIg4EH/pub?output=csv' },
+                { title: 'İBB VETERİNERLİK', desc: 'İstanbul Büyükşehir Belediyesi Veteriner Hizmetleri Müdürlüğü kayıtları.', link: 'https://veteriner.ibb.istanbul/' },
+                { title: 'AÇIK VERİ PORTALI', desc: 'Şehir araştırmaları ve belediye açık veri sistemleri verileri.', link: 'https://data.ibb.gov.tr/' },
+                { title: 'GÖNÜLLÜ AĞLARI', desc: 'Yerel hayvan severler ve mahalle destek topluluklarının saha verileri.', link: '#' }
+              ].map((source, i) => (
+                <a 
+                  key={i}
+                  href={source.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-8 bg-paper border border-line rounded-[32px] hover:border-brand transition-all group"
+                >
+                  <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center mb-6 shadow-sm border border-line group-hover:bg-brand group-hover:text-white transition-colors">
+                    <Info size={20} strokeWidth={3} />
+                  </div>
+                  <h3 className="font-black text-xs uppercase tracking-widest mb-3">{source.title}</h3>
+                  <p className="text-zinc-500 text-[11px] font-medium leading-relaxed">{source.desc}</p>
+                </a>
+              ))}
+            </div>
           </div>
-          <p className="text-zinc-400 text-[11px] font-black uppercase tracking-[0.2em]">© 2026 İstanbul Pati Destek Haritası</p>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-20 bg-ink text-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-12 border-b border-white/10 pb-16 mb-16">
+            <div className="max-w-md">
+              <div className="flex items-center gap-3 mb-8">
+                <div className="w-10 h-10 bg-brand rounded-full flex items-center justify-center">
+                  <PawPrint size={22} strokeWidth={3} />
+                </div>
+                <span className="font-display font-black text-xl tracking-tighter uppercase">Pati Haritası</span>
+              </div>
+              <p className="text-white/50 font-medium text-sm leading-relaxed">
+                Bu proje, İstanbul’daki sokak hayvanlarına destek noktalarını görünür kılmak amacıyla geliştirilmiştir. 
+                Amacımız her can dostumuzun en yakın yardıma en hızlı şekilde ulaşmasını sağlamaktır.
+              </p>
+            </div>
+            
+            <div className="flex flex-col gap-6">
+              <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/30">İLETİŞİME GEÇİN</p>
+              <a 
+                href="mailto:aysenur@example.com?subject=İstanbul Pati Destek Haritası Geri Bildirim&body=Merhaba, proje hakkında geri bildirim paylaşmak istiyorum."
+                className="text-4xl md:text-5xl font-black hover:text-brand transition-colors tracking-tighter uppercase"
+              >
+                BİZE ULAŞIN
+              </a>
+            </div>
+          </div>
+          
+          <div className="flex flex-col md:flex-row justify-between items-center gap-8 text-[10px] font-black uppercase tracking-widest text-white/30">
+            <p>© 2026 İSTANBUL PATİ DESTEK SİSTEMİ. TÜM HAKLARI SAKLIDIR.</p>
+            <div className="flex gap-8">
+              <a href="#" className="hover:text-white transition-colors">KVKK</a>
+              <a href="#" className="hover:text-white transition-colors">KULLANIM ŞARTLARI</a>
+            </div>
+          </div>
         </div>
       </footer>
     </div>

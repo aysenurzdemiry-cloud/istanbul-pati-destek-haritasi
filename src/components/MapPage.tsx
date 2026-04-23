@@ -25,16 +25,35 @@ function MapController({ loading }: { loading: boolean }) {
   const map = useMap();
   
   useEffect(() => {
+    // Initial invalidate
     map.invalidateSize();
-  }, [map, loading]);
+    
+    // Trigger window resize event which Leaflet listens to by default
+    window.dispatchEvent(new Event('resize'));
 
-  useEffect(() => {
-    // Also a delayed one for layout shifts
-    const timer = setTimeout(() => {
-      map.invalidateSize();
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [map]);
+    // Handle container changes aggressively
+    const observer = new ResizeObserver(() => {
+       map.invalidateSize();
+    });
+    
+    const container = map.getContainer();
+    if (container) {
+      observer.observe(container);
+    }
+
+    // Interval fallback for the first few seconds (the "aggressive" fix)
+    let count = 0;
+    const interval = setInterval(() => {
+       map.invalidateSize();
+       count++;
+       if (count > 5) clearInterval(interval);
+    }, 1000);
+
+    return () => {
+      observer.disconnect();
+      clearInterval(interval);
+    };
+  }, [map, loading]);
 
   return null;
 }
@@ -211,17 +230,18 @@ export default function MapPage() {
       </div>
 
       {/* Map Content */}
-      <div className="flex-1 relative p-12 overflow-hidden flex items-center justify-center">
+      <div className="flex-1 relative md:p-12 overflow-hidden flex items-center justify-center min-h-[400px]">
         <div className="absolute inset-0 opacity-40 pointer-events-none" style={{ backgroundImage: 'radial-gradient(#1A1A1A 1px, transparent 1px)', backgroundSize: '30px 30px' }}></div>
         
-        <div className="w-full h-full bg-white rounded-[60px] shadow-[inset_0_2px_20px_rgba(0,0,0,0.1)] border-[16px] border-white relative overflow-hidden z-10">
-          <MapContainer 
-            center={[41.0082, 28.9784]} 
-            zoom={11} 
-            scrollWheelZoom={true}
-            zoomControl={false}
-            className="w-full h-full"
-          >
+        <div className="w-full h-full bg-white md:rounded-[60px] shadow-[inset_0_2px_20px_rgba(0,0,0,0.1)] md:border-[16px] border-white relative overflow-hidden z-10 flex">
+          <div className="relative w-full h-full min-h-full">
+            <MapContainer 
+              center={[41.0082, 28.9784]} 
+              zoom={11} 
+              scrollWheelZoom={true}
+              zoomControl={false}
+              className="absolute inset-0 w-full h-full"
+            >
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -301,6 +321,7 @@ export default function MapPage() {
               </Marker>
             ))}
           </MapContainer>
+          </div>
 
           <AnimatePresence>
             {loading && (

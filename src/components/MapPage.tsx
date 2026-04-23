@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, Tooltip, ZoomControl } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, Tooltip, ZoomControl, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { MapPin, Phone, Building2, Loader2, Search, Filter, ChevronRight, Heart, PawPrint } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
@@ -19,6 +19,25 @@ const DefaultIcon = L.icon({
 });
 
 L.Marker.prototype.options.icon = DefaultIcon;
+
+// Internal component to fix map sizing issues
+function MapController({ loading }: { loading: boolean }) {
+  const map = useMap();
+  
+  useEffect(() => {
+    map.invalidateSize();
+  }, [map, loading]);
+
+  useEffect(() => {
+    // Also a delayed one for layout shifts
+    const timer = setTimeout(() => {
+      map.invalidateSize();
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [map]);
+
+  return null;
+}
 
 // Custom Marker for points
 const SupportIcon = L.divIcon({
@@ -208,6 +227,7 @@ export default function MapPage() {
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
             
+            <MapController loading={loading} />
             <ZoomControl position="bottomright" />
 
             {filteredPoints.map((point) => (

@@ -95,6 +95,14 @@ export default function MapPage() {
         const geocodedPoints: SupportPoint[] = [];
         for (let i = 0; i < data.length; i++) {
           const point = data[i];
+          
+          // Skip geocoding if coordinates already exist in CSV
+          if (point.lat && point.lng) {
+            geocodedPoints.push(point);
+            setProgress(Math.round(((i + 1) / data.length) * 100));
+            continue;
+          }
+
           const coords = await geocodeAddress(point.address, point.district);
           if (coords) {
             geocodedPoints.push({ ...point, ...coords });

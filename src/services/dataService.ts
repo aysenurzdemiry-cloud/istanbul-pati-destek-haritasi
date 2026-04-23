@@ -31,16 +31,29 @@ export const fetchSupportPoints = async (): Promise<SupportPoint[]> => {
         // Assuming columns: Adı, İlçesi, Adresi, Telefonu
         const points: SupportPoint[] = rawData
           .filter(row => row['Yer Adı'] && row['İlçe'])
-          .map((row, index) => ({
-            id: index.toString(),
-            name: row['Yer Adı'],
-            district: row['İlçe'],
-            address: row['Adres'] || '',
-            phone: row['Telefon'] || 'Bilgi Yok',
-            type: row['Tür'] || 'Diğer',
-            isFree: row['Ücretsiz mi'],
-            notes: row['Not']
-          }));
+          .map((row, index) => {
+            const point: SupportPoint = {
+              id: index.toString(),
+              name: row['Yer Adı'],
+              district: row['İlçe'],
+              address: row['Adres'] || '',
+              phone: row['Telefon'] || 'Bilgi Yok',
+              type: row['Tür'] || 'Diğer',
+              isFree: row['Ücretsiz mi'],
+              notes: row['Not']
+            };
+
+            // If coordinates exist in CSV, use them directly
+            const csvLat = parseFloat(row['Enlem'] || row['lat']);
+            const csvLng = parseFloat(row['Boylam'] || row['lng'] || row['lon']);
+            
+            if (!isNaN(csvLat) && !isNaN(csvLng)) {
+              point.lat = csvLat;
+              point.lng = csvLng;
+            }
+
+            return point;
+          });
         
         resolve(points);
       },
